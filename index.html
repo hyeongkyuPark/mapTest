@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Styles -->
+<style>
+    #chartdiv {
+      width: 100%;
+      height: 500px;
+    }
+    
+    </style>
+    
+    <!-- Resources -->
+    <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/maps.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/geodata/worldLow.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+    
+    <!-- Chart code -->
+    <script>
+    am4core.ready(function() {
+    
+    // Themes begin
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+    
+    // Create map instance
+    var chart = am4core.create("chartdiv", am4maps.MapChart);
+    
+    // Set map definition
+    chart.geodata = am4geodata_worldLow;
+    
+    // Set projection
+    chart.projection = new am4maps.projections.Miller();
+    
+    // Create map polygon series
+    var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
+    
+    // Exclude Antartica
+    polygonSeries.exclude = ["AQ"];
+
+    polygonSeries.include = ["KR","KP","CN","MN","TW","JP"];
+    
+    // Make map load polygon (like country names) data from GeoJSON
+    polygonSeries.useGeodata = true;
+    
+    // Configure series
+    var polygonTemplate = polygonSeries.mapPolygons.template;
+    polygonTemplate.tooltipText = "{name}";
+    polygonTemplate.fill = chart.colors.getIndex(0);
+    
+
+    // Create hover state and set alternative fill color
+    var hs = polygonTemplate.states.create("hover");
+    hs.properties.fill = chart.colors.getIndex(2);
+   
+    
+    // Create an event to toggle "active" state
+    polygonTemplate.events.on("hit", function(ev) {
+        let contryCode = ev.target.dataItem.dataContext.id;
+        switch(contryCode) {
+            case 'KR':
+                window.open('https://namu.wiki/w/대한민국');
+                break;
+            case 'KP':
+                window.open('https://namu.wiki/w/북한');
+                break;
+            case 'CN':
+                window.open("https://namu.wiki/w/중국");
+                break;
+            case 'MN':
+                window.open("https://namu.wiki/w/몽골");
+                break;
+            case 'TW':
+                window.open("https://namu.wiki/w/대만");
+                break;
+            case 'JP':
+                window.open("https://namu.wiki/w/일본");
+                break;
+        }
+    })
+    
+
+    
+    }); // end am4core.ready()
+    </script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="chartdiv"></div>
+    <div id="info"></div>
+</body>
+</html>
